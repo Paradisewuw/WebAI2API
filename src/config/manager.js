@@ -46,6 +46,7 @@ export function getServerConfig() {
     return {
         port: config.server?.port || 3000,
         authToken: config.server?.auth || '',
+        codexInstallationId: config.server?.codexInstallationId || '',
         keepaliveMode: config.server?.keepalive?.mode || 'comment',
         logLevel: config.logLevel || 'info',
         imageMarkdown: config.server?.imageMarkdown || false
@@ -63,6 +64,7 @@ export function saveServerConfig(data) {
 
     if (data.port !== undefined) config.server.port = data.port;
     if (data.authToken !== undefined) config.server.auth = data.authToken;
+    if (data.codexInstallationId !== undefined) config.server.codexInstallationId = data.codexInstallationId;
     if (data.keepaliveMode !== undefined) {
         if (!config.server.keepalive) config.server.keepalive = {};
         config.server.keepalive.mode = data.keepaliveMode;

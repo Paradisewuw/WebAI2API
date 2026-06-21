@@ -32,6 +32,10 @@ export function validateServerConfig(data) {
     }
 
     // Keepalive Mode 校验
+    if (data.codexInstallationId !== undefined && typeof data.codexInstallationId !== 'string') {
+        errors.push('codexInstallationId 必须是字符串');
+    }
+
     if (data.keepaliveMode !== undefined) {
         if (!['comment', 'content'].includes(data.keepaliveMode)) {
             errors.push('keepaliveMode 必须是 comment 或 content');

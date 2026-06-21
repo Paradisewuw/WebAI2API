@@ -65,6 +65,7 @@ const sendPrompt = ref('');
 const sendImageList = ref([]);
 const sendStreamMode = ref(false);
 const sendReasoningMode = ref(true);
+const sendCodexInstallationId = ref('');
 const sending = ref(false);
 
 // 当前模型是否支持图片输入
@@ -641,11 +642,23 @@ const sendRequest = () => {
     if (sendReasoningMode.value) {
         body.reasoning = true;
     }
+    const codexInstallationId = sendCodexInstallationId.value.trim();
+    if (codexInstallationId) {
+        body.client_metadata = {
+            'x-codex-installation-id': codexInstallationId,
+            codex_installation_id: codexInstallationId
+        };
+    }
+
+    const headers = { ...settingsStore.getHeaders(), 'Content-Type': 'application/json' };
+    if (codexInstallationId) {
+        headers['x-codex-installation-id'] = codexInstallationId;
+    }
 
     // 发射后不等待
     fetch('/v1/chat/completions', {
         method: 'POST',
-        headers: { ...settingsStore.getHeaders(), 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(body)
     }).catch(() => { /* 网络错误静默处理，列表会显示失败状态 */ });
 
@@ -781,6 +794,11 @@ onUnmounted(() => {
                 <div style="margin-bottom: 12px;">
                     <div style="font-size: 12px; color: #8c8c8c; margin-bottom: 4px;">提示词</div>
                     <a-textarea v-model:value="sendPrompt" placeholder="输入提示词" :rows="3" size="small" />
+                </div>
+
+                <div style="margin-bottom: 12px;">
+                    <div style="font-size: 12px; color: #8c8c8c; margin-bottom: 4px;">Codex 安装 ID</div>
+                    <a-input v-model:value="sendCodexInstallationId" placeholder="留空则使用服务器默认值" size="small" />
                 </div>
 
                 <!-- 选项 + 发送按钮 -->
