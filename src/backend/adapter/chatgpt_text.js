@@ -13,7 +13,6 @@ import {
     waitForInput,
     gotoWithCheck
 } from '../utils/index.js';
-import { installCodexInstallationRoute } from '../utils/codexInstallation.js';
 import { logger } from '../../utils/logger.js';
 
 // --- 配置常量 ---
@@ -89,7 +88,6 @@ async function generate(context, prompt, imgPaths, modelId, meta = {}) {
     const { page, config } = context;
     const waitTimeout = config?.backend?.pool?.waitTimeout ?? 120000;
     const sendBtnLocator = page.getByRole('button', { name: 'Send prompt' });
-    let cleanupCodexInstallationRoute = async () => { };
 
     try {
         const useTemp = config?.backend?.adapter?.chatgpt_text?.temporaryChat || false;
@@ -153,8 +151,6 @@ async function generate(context, prompt, imgPaths, modelId, meta = {}) {
 
         // 4. 先启动 SSE 监听，再发送提示词（避免竞态）
         logger.info('适配器', '监听 SSE 流获取文本...', meta);
-
-        cleanupCodexInstallationRoute = await installCodexInstallationRoute(page, meta.codexInstallationId, meta, logger);
 
         let textContent = '';
         let isComplete = false;
@@ -261,9 +257,7 @@ async function generate(context, prompt, imgPaths, modelId, meta = {}) {
 
         logger.error('适配器', '生成任务失败', { ...meta, error: err.message });
         return { error: `生成任务失败: ${err.message}` };
-    } finally {
-        await cleanupCodexInstallationRoute();
-    }
+    } finally { }
 }
 
 /**

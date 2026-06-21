@@ -489,12 +489,6 @@ export class Worker {
 
         // 扩展 meta，添加 adapter 和 model 信息
         const enrichedMeta = { ...meta, adapter: type, model: modelId };
-        if (meta.codexInstallationId) {
-            Object.defineProperty(enrichedMeta, 'codexInstallationId', {
-                value: meta.codexInstallationId,
-                enumerable: false
-            });
-        }
 
         this.busyCount++;
         try {

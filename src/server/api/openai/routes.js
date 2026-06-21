@@ -8,7 +8,6 @@ import { logger } from '../../../utils/logger.js';
 import { ERROR_CODES } from '../../errors.js';
 import { sendJson, sendApiError } from '../../respond.js';
 import { parseRequest } from './parse.js';
-import { applyCodexInstallationMetadata, getCodexInstallationId } from './codex.js';
 
 /**
  * 创建 OpenAI API 路由处理器
@@ -23,8 +22,7 @@ export function createOpenAIRouter(context) {
         getModelType,
         tempDir,
         imageLimit,
-        queueManager,
-        config
+        queueManager
     } = context;
 
     /**
@@ -82,8 +80,6 @@ export function createOpenAIRouter(context) {
             const body = Buffer.concat(chunks).toString();
             const data = JSON.parse(body);
             const isStreaming = data.stream === true;
-            const codexInstallationId = getCodexInstallationId(req, data, config);
-            applyCodexInstallationMetadata(data, codexInstallationId);
 
             // 限流检查
             if (!isStreaming && !queueManager.canAcceptNonStreaming()) {
@@ -141,8 +137,7 @@ export function createOpenAIRouter(context) {
                 modelName,
                 id: requestId,
                 isStreaming,
-                reasoning,
-                codexInstallationId
+                reasoning
             });
 
         } catch (err) {

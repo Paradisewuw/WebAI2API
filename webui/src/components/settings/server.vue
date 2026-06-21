@@ -9,7 +9,6 @@ const settingsStore = useSettingsStore();
 const formData = reactive({
     port: 5173,
     authToken: '',
-    codexInstallationId: '',
     keepaliveMode: 'comment',
     logLevel: 'info',
     queueBuffer: 2,
@@ -78,16 +77,6 @@ const handleSave = async () => {
                             用于 API 请求鉴权的密钥，留空则不启用鉴权
                         </div>
                         <a-input-password v-model:value="formData.authToken" placeholder="请输入 Token" type="password" />
-                    </div>
-                </a-col>
-
-                <a-col :xs="24" :md="12">
-                    <div style="margin-bottom: 8px;">
-                        <div style="font-weight: 600; margin-bottom: 4px;">Codex 安装 ID</div>
-                        <div style="font-size: 12px; color: #8c8c8c; margin-bottom: 8px;">
-                            默认随 ChatGPT/Codex 请求发送；单次请求的请求头或 client_metadata 会覆盖它
-                        </div>
-                        <a-input v-model:value="formData.codexInstallationId" placeholder="留空则不注入安装 ID" />
                     </div>
                 </a-col>
 

@@ -15,7 +15,6 @@ import {
     waitApiResponse,
     useContextDownload
 } from '../utils/index.js';
-import { installCodexInstallationRoute } from '../utils/codexInstallation.js';
 import { logger } from '../../utils/logger.js';
 
 // --- 配置常量 ---
@@ -35,7 +34,6 @@ async function generate(context, prompt, imgPaths, modelId, meta = {}) {
     const { page, config } = context;
     const waitTimeout = config?.backend?.pool?.waitTimeout ?? 120000;
     const sendBtnLocator = page.getByRole('button', { name: 'Send prompt' });
-    let cleanupCodexInstallationRoute = async () => { };
 
     try {
         logger.info('适配器', '开启新会话...', meta);
@@ -84,7 +82,6 @@ async function generate(context, prompt, imgPaths, modelId, meta = {}) {
         logger.info('适配器', '输入提示词...', meta);
         await safeClick(page, INPUT_SELECTOR, { bias: 'input' });
         await humanType(page, INPUT_SELECTOR, prompt);
-        cleanupCodexInstallationRoute = await installCodexInstallationRoute(page, meta.codexInstallationId, meta, logger);
 
         // 4. 发送提示词
         logger.debug('适配器', '发送提示词...', meta);
@@ -270,9 +267,7 @@ async function generate(context, prompt, imgPaths, modelId, meta = {}) {
 
         logger.error('适配器', '生成任务失败', { ...meta, error: err.message });
         return { error: `生成任务失败: ${err.message}` };
-    } finally {
-        await cleanupCodexInstallationRoute();
-    }
+    } finally { }
 }
 
 /**

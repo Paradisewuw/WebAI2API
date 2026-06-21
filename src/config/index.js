@@ -242,10 +242,6 @@ export function loadConfig() {
     }
 
     // 设置 keepalive 配置默认值
-    if (typeof config.server.codexInstallationId !== 'string') {
-        config.server.codexInstallationId = '';
-    }
-
     if (!config.server.keepalive) {
         config.server.keepalive = { mode: 'comment' };
     } else {
