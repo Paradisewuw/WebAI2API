@@ -1,7 +1,10 @@
-name: Manual Docker Build
+name: Docker Build
 
-# 核心配置：仅允许手动触发
+# Push 到 main 时自动构建，也保留手动触发入口
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       reason:
@@ -10,7 +13,7 @@ on:
         default: 'Manual build update'
 
 env:
-  IMAGE_NAME: foxhui/webai-2api
+  IMAGE_NAME: ghcr.io/paradisewuw/webai-2api
 
 jobs:
   build-and-push:
@@ -32,12 +35,13 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # 4. 登录 Docker Hub
-      - name: Log into Docker Hub
+      # 4. 登录 GHCR
+      - name: Log into GHCR
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       # 5. 生成 Docker 标签
       # 逻辑：
